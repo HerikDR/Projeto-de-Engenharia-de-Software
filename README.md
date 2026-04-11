@@ -12,11 +12,12 @@ Este é um sistema simples e prático para o gerenciamento de tarefas (To-Do Lis
 
 ## Funcionalidades do Sistema
 
-#### 1. Criar novas tarefas;
-#### 2. Editar tarefas existentes;
-#### 3. Excluir tarefas desnecessárias;
-#### 4. Listar todas as tarefas cadastradas;
-#### 5. Marcar tarefas como concluídas.
+#### 1. Cadastrar usuários;
+#### 2. Criar novas tarefas;
+#### 3. Editar tarefas existentes;
+#### 4. Excluir tarefas desnecessárias;
+#### 5. Listar todas as tarefas cadastradas;
+#### 6. Marcar tarefas como concluídas.
 
 ## Linguagens e métodos utilizados
 #### Backend: Java
