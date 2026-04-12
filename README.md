@@ -24,3 +24,17 @@ Este é um sistema simples e prático para o gerenciamento de tarefas (To-Do Lis
 #### Frontend: HTML e CSS
 #### Banco de Dados: PostgreSQL
 #### Gestão Ágil e Automação: GitHub (Projects, Issues e Actions)
+
+## Product Backlog
+
+1. Criar cadastro de usuário
+2. Implementar login de usuário
+3. Criar tarefa
+4. Editar tarefa
+5. Excluir tarefa
+6. Listar tarefas
+7. Marcar tarefa como concluída
+8. Desenvolver interface frontend
+9. Integrar com banco de dados PostgreSQL
+10. Validar dados de entrada
+
