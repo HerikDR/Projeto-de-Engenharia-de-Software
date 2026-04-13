@@ -3,46 +3,26 @@
 <head>
     <title>Lista de Tarefas</title>
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        body {
-            background-color: #A1AEB1;
-        }
-        ul {
-            background-color: #5E777A;
-        }
-        .concluida {
-            text-decoration: line-through;
-            color: #555;
-        }
-        li {
-            margin-bottom: 10px;
-            list-style: none;
-        }
-        .btn {
-            margin-left: 5px;
-            text-decoration: none;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 0.8em;
-        }
-        .btn-delete { background-color: #ff4d4d; color: white; }
-        .btn-done { background-color: #4CAF50; color: white; }
-    </style>
 </head>
 <body>
 
 <h1>Lista de Tarefas</h1>
 
-<ul>
-    <li>Tarefa 1
-        <button type="button" class="btn btn-done">Concluir</button>
-        <button type="button" class="btn btn-delete">Deletar</button>
-    </li>
-    <li>Tarefa 2
-        <button type="button" class="btn btn-done">Concluir</button>
-        <button type="button" class="btn btn-delete">Deletar</button>
-    </li>
-</ul>
+<div class="container">
+    <ul>
+        <li>
+            Tarefa 1
+            <button type="button" class="btn btn-done">Concluir</button>
+            <button type="button" class="btn btn-delete">Excluir</button>
+        </li>
+
+        <li>
+            Tarefa 2
+            <button type="button" class="btn btn-done">Concluir</button>
+            <button type="button" class="btn btn-delete">Excluir</button>
+        </li>
+    </ul>
+</div>
 
 <a href="/tarefas/formulario">Nova Tarefa</a>
 
