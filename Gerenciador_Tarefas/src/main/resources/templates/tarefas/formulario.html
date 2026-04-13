@@ -2,40 +2,25 @@
 <html>
 <head>
     <title>Nova Tarefa</title>
-    <style>
-        body {
-            background-color: #A1AEB1;
-        }
-        form {
-            font-family: cursive;
-            background-color: #5E777A;
-            display: flex;
-            height: 300px;
-            width: 500px;
-            justify-content: safe center;
-            align-items: center;
-            flex-direction: column;
-            align-content: flex-start;
-            margin: auto;
-        }
-    </style>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
 <h1>Criar Nova Tarefa</h1>
 
-<form action="/tarefas" method="post">
-    
-    <label>Título:</label>
-    <input type="text" name="titulo" required><br><br>
+<div class="container">
+    <form action="/tarefas" method="post">
+        
+        <label>Título:</label>
+        <input type="text" name="titulo" required>
 
-    <label>Descrição:</label>
-    <textarea name="descricao" required></textarea><br><br>
+        <label>Descrição:</label>
+        <textarea name="descricao" required></textarea>
 
-    <button type="submit">Salvar</button>
+        <button type="submit" class="btn btn-done">Salvar</button>
 
-</form>
+    </form>
+</div>
 
 <a href="/tarefas">Voltar</a>
 
