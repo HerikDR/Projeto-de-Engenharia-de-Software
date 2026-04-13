@@ -1,78 +1,116 @@
-package com.processos.service;
+package com.tarefas.service;
 
-import com.processos.model.Processo;
-import com.processos.model.SubPasso;
-import com.processos.repository.ProcessoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tarefas.dto.TarefaDTO.TarefaRequest;
+import com.tarefas.dto.TarefaDTO.TarefaResponse;
+import com.tarefas.model.Tarefa;
+import com.tarefas.model.Usuario;
+import com.tarefas.repository.TarefaRepository;
+import com.tarefas.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class ProcessoService {
+@RequiredArgsConstructor
+public class TarefaService {
 
-    @Autowired
-    private ProcessoRepository processoRepository;
+    private final TarefaRepository tarefaRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public Processo cadastrarProcesso(Processo processo) throws Exception {
-        if (processo.getDataInicio().isEqual(processo.getDataTermino())) {
-            throw new Exception("A data de início não pode ser igual à data de término.");
+    @Transactional(readOnly = true)
+    public List<TarefaResponse> listarPorUsuario(Long usuarioId) {
+        validarUsuarioExistente(usuarioId);
+        return tarefaRepository.findByUsuarioId(usuarioId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TarefaResponse> listarPorUsuarioEStatus(Long usuarioId, boolean concluida) {
+        validarUsuarioExistente(usuarioId);
+        return tarefaRepository.findByUsuarioIdAndConcluida(usuarioId, concluida)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public TarefaResponse buscarPorId(Long id) {
+        return toResponse(buscarTarefaOuLancarExcecao(id));
+    }
+
+    @Transactional
+    public TarefaResponse criar(TarefaRequest request) {
+        Usuario usuario = usuarioRepository.findById(request.usuarioId())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Usuário não encontrado com ID: " + request.usuarioId()));
+
+        Tarefa tarefa = new Tarefa();
+        tarefa.setUsuario(usuario);
+        tarefa.setTitulo(request.titulo());
+        tarefa.setDescricao(request.descricao());
+        tarefa.setConcluida(request.concluida());
+
+        return toResponse(tarefaRepository.save(tarefa));
+    }
+
+    @Transactional
+    public TarefaResponse atualizar(Long id, TarefaRequest request) {
+        Tarefa tarefa = buscarTarefaOuLancarExcecao(id);
+
+        if (!tarefa.getUsuario().getId().equals(request.usuarioId())) {
+            Usuario novoUsuario = usuarioRepository.findById(request.usuarioId())
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Usuário não encontrado com ID: " + request.usuarioId()));
+            tarefa.setUsuario(novoUsuario);
         }
 
-        if (processo.getSubPassos() != null && !processo.getSubPassos().isEmpty()) {
-            for (SubPasso subPasso : processo.getSubPassos()) {
-                subPasso.setProcesso(processo);
-                if (subPasso.getDataCriacao() == null) {
-                    subPasso.setDataCriacao(LocalDateTime.now());
-                }
-            }
+        tarefa.setTitulo(request.titulo());
+        tarefa.setDescricao(request.descricao());
+        tarefa.setConcluida(request.concluida());
+
+        return toResponse(tarefaRepository.save(tarefa));
+    }
+
+    @Transactional
+    public TarefaResponse alternarConcluida(Long id) {
+        Tarefa tarefa = buscarTarefaOuLancarExcecao(id);
+        tarefa.setConcluida(!tarefa.isConcluida());
+        return toResponse(tarefaRepository.save(tarefa));
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+        Tarefa tarefa = buscarTarefaOuLancarExcecao(id);
+        tarefaRepository.delete(tarefa);
+    }
+
+    // --- Helpers ---
+
+    private Tarefa buscarTarefaOuLancarExcecao(Long id) {
+        return tarefaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tarefa não encontrada com ID: " + id));
+    }
+
+    private void validarUsuarioExistente(Long usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new IllegalArgumentException("Usuário não encontrado com ID: " + usuarioId);
         }
-
-        return processoRepository.save(processo);
     }
 
-    public List<Processo> listarAbertos() {
-        return processoRepository.findAll();
-    }
-
-    public Processo buscarPorId(Long id) throws Exception {
-        return processoRepository.findById(id)
-                .orElseThrow(() -> new Exception("Processo não encontrado"));
-    }
-
-    public Processo atualizar(Long id, Processo processoAtualizado) throws Exception {
-        Processo existente = buscarPorId(id);
-        existente.setTitulo(processoAtualizado.getTitulo());
-        existente.setDescricao(processoAtualizado.getDescricao());
-        existente.setDataInicio(processoAtualizado.getDataInicio());
-        existente.setDataTermino(processoAtualizado.getDataTermino());
-        existente.setPrioridade(processoAtualizado.getPrioridade());
-        existente.setFeitoPor(processoAtualizado.getFeitoPor());
-        existente.setParaQuem(processoAtualizado.getParaQuem());
-        existente.setConcluido(processoAtualizado.isConcluido());
-
-        // Atualizar os subpassos
-        existente.getSubPassos().clear();
-        if (processoAtualizado.getSubPassos() != null && !processoAtualizado.getSubPassos().isEmpty()) {
-            for (SubPasso subPasso : processoAtualizado.getSubPassos()) {
-                subPasso.setProcesso(existente);
-                if (subPasso.getDataCriacao() == null) {
-                    subPasso.setDataCriacao(LocalDateTime.now());
-                }
-                existente.getSubPassos().add(subPasso);
-            }
-        }
-
-        return processoRepository.save(existente);
-    }
-
-    public void deletar(Long id) throws Exception {
-        Processo existente = buscarPorId(id);
-        processoRepository.delete(existente);
-    }
-
-    public List<Processo> buscarPorTitulo(String titulo) {
-        return processoRepository.findByTituloContainingIgnoreCase(titulo);
+    private TarefaResponse toResponse(Tarefa tarefa) {
+        return new TarefaResponse(
+                tarefa.getId(),
+                tarefa.getUsuario().getId(),
+                tarefa.getUsuario().getNome(),
+                tarefa.getTitulo(),
+                tarefa.getDescricao(),
+                tarefa.isConcluida(),
+                tarefa.getCriadoEm() != null ? tarefa.getCriadoEm().toString() : null,
+                tarefa.getAtualizadoEm() != null ? tarefa.getAtualizadoEm().toString() : null
+        );
     }
 }
