@@ -9,13 +9,13 @@
 <h1>Criar Nova Tarefa</h1>
 
 <div class="container">
-    <form action="/tarefas" method="post">
-        
+    <form id="form-tarefa">
+
         <label>Título:</label>
-        <input type="text" name="titulo" required>
+        <input type="text" id="titulo" required>
 
         <label>Descrição:</label>
-        <textarea name="descricao" required></textarea>
+        <textarea id="descricao" required></textarea>
 
         <button type="submit" class="btn btn-done">Salvar</button>
 
@@ -23,6 +23,32 @@
 </div>
 
 <a href="/tarefas">Voltar</a>
+
+<script>
+const usuarioId = 1;
+
+document.getElementById("form-tarefa").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const titulo = document.getElementById("titulo").value;
+    const descricao = document.getElementById("descricao").value;
+
+    fetch("/api/tarefas", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            usuarioId: usuarioId,
+            titulo: titulo,
+            descricao: descricao,
+            concluida: false
+        })
+    }).then(() => {
+        window.location.href = "/tarefas";
+    });
+});
+</script>
 
 </body>
 </html>
