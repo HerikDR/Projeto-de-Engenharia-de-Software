@@ -9,22 +9,74 @@
 <h1>Lista de Tarefas</h1>
 
 <div class="container">
-    <ul>
-        <li>
-            Tarefa 1
-            <button type="button" class="btn btn-done">Concluir</button>
-            <button type="button" class="btn btn-delete">Excluir</button>
-        </li>
-
-        <li>
-            Tarefa 2
-            <button type="button" class="btn btn-done">Concluir</button>
-            <button type="button" class="btn btn-delete">Excluir</button>
-        </li>
-    </ul>
+    <ul id="lista-tarefas"></ul>
 </div>
 
 <a href="/tarefas/formulario">Nova Tarefa</a>
+
+<script>
+const usuarioId = 1; // ajuste conforme necessário
+
+function carregarTarefas() {
+    fetch(`/api/tarefas?usuarioId=${usuarioId}`)
+        .then(res => res.json())
+        .then(tarefas => {
+            const lista = document.getElementById("lista-tarefas");
+            lista.innerHTML = "";
+
+            tarefas.forEach(tarefa => {
+                const li = document.createElement("li");
+
+                if (tarefa.concluida) {
+                    li.classList.add("concluida");
+                }
+
+                li.innerHTML = `
+                    ${tarefa.titulo}
+                    <button class="btn btn-done" onclick="concluir(${tarefa.id})">Concluir</button>
+                    <button class="btn btn-delete" onclick="excluir(${tarefa.id})">Excluir</button>
+                    <button class="btn" onclick="editar(${tarefa.id}, '${tarefa.titulo}', '${tarefa.descricao}')">Editar</button>
+                `;
+
+                lista.appendChild(li);
+            });
+        });
+}
+
+function excluir(id) {
+    fetch(`/api/tarefas/${id}`, {
+        method: "DELETE"
+    }).then(() => carregarTarefas());
+}
+
+function concluir(id) {
+    fetch(`/api/tarefas/${id}/toggle`, {
+        method: "PATCH"
+    }).then(() => carregarTarefas());
+}
+
+function editar(id, titulo, descricao) {
+    const novoTitulo = prompt("Novo título:", titulo);
+    const novaDescricao = prompt("Nova descrição:", descricao);
+
+    if (novoTitulo !== null) {
+        fetch(`/api/tarefas/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                usuarioId: usuarioId,
+                titulo: novoTitulo,
+                descricao: novaDescricao,
+                concluida: false
+            })
+        }).then(() => carregarTarefas());
+    }
+}
+
+carregarTarefas();
+</script>
 
 </body>
 </html>
