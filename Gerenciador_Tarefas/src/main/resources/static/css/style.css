@@ -1,8 +1,75 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
+    background-color: #A1AEB1;
     text-align: center;
 }
 
+/* Container central */
+.container {
+    width: 500px;
+    margin: 30px auto;
+    background-color: #5E777A;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Lista */
 ul {
+    padding: 0;
+}
+
+li {
     list-style: none;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Tarefa concluída */
+.concluida {
+    text-decoration: line-through;
+    color: #555;
+}
+
+/* Botões */
+.btn {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn-done {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+/* Formulário */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input, textarea {
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Links */
+a {
+    display: inline-block;
+    margin-top: 15px;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
 }
