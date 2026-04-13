@@ -38,3 +38,10 @@ Este é um sistema simples e prático para o gerenciamento de tarefas (To-Do Lis
 9. Integrar com banco de dados PostgreSQL
 10. Validar dados de entrada
 
+## User Stories
+
+- Como usuário, quero criar uma tarefa para organizar minhas atividades.
+- Como usuário, quero visualizar minhas tarefas para acompanhar o que preciso fazer.
+- Como usuário, quero editar uma tarefa para corrigir ou atualizar informações.
+- Como usuário, quero excluir uma tarefa para remover itens desnecessários.
+- Como usuário, quero marcar tarefas como concluídas para acompanhar meu progresso.
